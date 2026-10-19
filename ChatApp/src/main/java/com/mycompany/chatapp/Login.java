@@ -18,6 +18,9 @@ public class Login {
     private String firstName;
     private String lastName;
     
+    // For Part 2 ChatApp
+    public Login(){
+    }
     //Constructor
     //Checks that the username contains an underscore and is no more than five characters.
     public Login(String firstName, String lastName, String registeredUsername, String registeredPassword, String registeredCellPhone){
@@ -37,8 +40,7 @@ public class Login {
     //Checks if the password meets the required complexity
     //Checks password length, capital letter, and special character.
     public boolean checkPasswordComplexity(String password){
-        
-        if(password.length() < 8){
+            if(password.length() < 8){
             return false;
         }
         
@@ -110,7 +112,7 @@ public class Login {
     public String returnLoginStatus(String username, String password){
         
         if(loginUser(username, password)){
-            return "Welcome " +  firstName + ", " + lastName + ", " + "it is great to see you again.";
+            return "Welcome " +  firstName + ", " + lastName + ", it is great to see you again.";
         }
         
         return "Username or password incorrect, please try again.";

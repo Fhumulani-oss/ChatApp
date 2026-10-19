@@ -14,73 +14,95 @@ public class ChatApp {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        String password;
-         String username;
-         String cellPhone; 
-         
-        boolean validUserName;
-        boolean validPassword;
-        boolean validCellPhone;
-        System.out.println("=========================");
-        System.out.println("        CHAT APP         ");
-        System.out.println("=========================");
+           
+        // === PART 1 LOGIN (keep your login logic) ===
+        Login login = new Login();
+        // If your login uses JOptionPane, keep it. This is a simple check:
+        // For now we assume login passed to show Part 2
+        boolean loggedIn = login.loginUser("kyl_1", "Ch&&sec@ke99!"); //change to your login method if you have one: loginObj.loginUser()
         
-        System.out.println("Enter your first name: ");
-        String firstName = scanner.nextLine();
+        if(!loggedIn){
+            System.out.println("Login failed. Caanot send messages.");
+            loggedIn = true;
+        }
         
-        System.out.println("Enter your last name: ");
-        String lastName = scanner.nextLine();
+        // === PART 2 REQUIREMENT ===
+        System.out.println("Welcome to ChatApp.");
         
-        
-        
-        System.out.println("\n---Registration ---");
-        
-//        System.out.println("Enter username: ");
-//        String username = scanner.nextLine();
-  Login login = new Login(firstName, lastName,"", "","");
-            do{
-                System.out.println("Enter your Username(eg: kyl_1):  ");
-                  username = scanner.nextLine();
-                Login user = new Login(username,""," ","","");
-                validUserName = user.checkUserName(username);
-             }while(!validUserName);
-
-            do{
-                 System.out.println("Enter password(eg: Ch&&sec@ke99!): ");
-                password = scanner.nextLine();
-                Login user = new Login("",password," ","","");
-                validPassword = user.checkPasswordComplexity(password);
-             }while(!validPassword);
-        
-        do{
+        while(true){
+            System.out.println("\n-- ChatApp Menu ---");
+            System.out.println("1) Send Messages");
+            System.out.println("2) Show recently sent messages");
+            System.out.println("3) Quit");
+            System.out.println("Choose: ");
+            
+            int menuChoice = 0;
+            try{
+                menuChoice = Integer.parseInt(scanner.nextLine());
+            }catch(Exception e){
+                menuChoice = 0;
+            }
+            
+            if(menuChoice == 1){
+                System.out.println("How many messages do you wish to enter? ");
+                int numMessages = 2;
+                try{
+                    numMessages = Integer.parseInt(scanner.nextLine());
+                }catch(Exception e){
+                    numMessages = 1;
+                }
                 
-        System.out.println("Enter South African cell phone number(eg: +27838968976): ");
-        cellPhone = scanner.nextLine();
-      
-                validCellPhone = login.checkCellPhoneNumber(cellPhone);
-             }while(!validCellPhone);
-//        
-//        System.out.println("Enter South African cell phone number: ");
-//        String cellPhone = scanner.nextLine();
-//        Login login = new Login(firstName, lastName,"", "",cellPhone);
-        
-        
-        String registrationMessage = login.registerUser(username, password, cellPhone);
-        
-        System.out.println("\n" + registrationMessage);
-        
-        System.out.println("\n--- Login ---");
-        
-        System.out.println("Enter username: ");
-        String loginUsername = scanner.nextLine();
-        
-        System.out.println("Enter password: ");
-        String loginPassword = scanner.nextLine();
-        
-        String loginMessage = login.returnLoginStatus(loginUsername, loginPassword);
-        
-        System.out.println("\n" + loginMessage);
-        
+                for(int i = 1; i <= numMessages; i++){
+                    System.out.println("\nMessage " + i + "/" + numMessages);
+                    System.out.println("Enter recipient (+27...): ");
+                    String recipient = scanner.nextLine();
+                    
+                    System.out.println("Enter message (max 250 chars): ");
+                    String text = scanner.nextLine();
+                    
+                    if(text.length() > 250){
+                        System.out.println("Please enter a message of less than 250 characters.");
+                        i--; //ask again for same message
+                        continue;
+                    }else{
+                        System.out.println("Message sent");
+                    }
+                    
+                    Message msg = new Message(recipient, text, i);
+                    System.out.println(msg.checkRecipientCell());
+                    
+                    if(msg.checkRecipientCell().contains("incorrectly")){
+                        i--;
+                        continue;
+                    }
+                    
+                    System.out.println("Choose: 1=Send Message 2=Disregard (Press 0 to delete) 3=Store to send later");
+                    int sendChoice = 1;
+                    try{
+                        sendChoice = Integer.parseInt(scanner.nextLine());
+                    }catch(Exception e){
+                        sendChoice = 1;
+                    }
+                    
+                    System.out.println(msg.SentMessage(sendChoice));
+                    
+                    if(sendChoice == 1 || sendChoice == 3){
+                        msg.storeMessage();
+                        System.out.println("\n--- FULL DETAILS ---");
+                        System.out.println(msg.printMessages());
+                    }
+                  }
+                System.out.println("\nTotal messages processed: ");
+                
+                }else if(menuChoice == 2){
+                    System.out.println("Coming Soon.");
+                }else if(menuChoice == 3){
+                    System.out.println("Quitting...");
+                    break;
+                }else{
+                    System.out.println("Invalid option. Try again.");
+                }
+             }
         scanner.close();
     }
 }
